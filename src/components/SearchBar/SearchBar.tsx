@@ -8,13 +8,16 @@ interface SearchBarProps {
 export default function SearchBar({ onSubmit }: SearchBarProps) {
 
   function handleSubmit(formData: FormData) {
-    const title = formData.get("query") as string;
-    
-    if (title === "") {
-      toast("Please enter your search query.")
-    }
-    onSubmit(title)
-    }
+
+  const title = (formData.get("query") as string).trim();
+
+  if (!title || title.length === 0) {
+  toast("Please enter your search query.");
+  return;
+}
+
+onSubmit(title);
+}
 
     return (
 <header className={styles.header}>

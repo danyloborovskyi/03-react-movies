@@ -6,15 +6,14 @@ import MovieGrid from "../MovieGrid/MovieGrid"
 import type { Movie } from "../../types/movie"
 import Loader from '../Loader/Loader';
 
-import { useState} from "react"
+import {useState} from "react"
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import MovieModal from '../MovieModal/MovieModal';
 
 function App() {
 
-  // const [searchQuery, setSearchQuery] = useState<string>("");
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [movie, setMovie] = useState<Movie>({} as Movie)
+  const [movie, setMovie] = useState<Movie | null>(null)
   const [loader, setLoader] = useState(false)
   const [error, setError] = useState(false)
   const [openModal, setOpenModal] = useState(false)
@@ -30,7 +29,6 @@ function App() {
         toast("No movies found for your request.")
       }
       setMovies(data);
-
     } catch {
       setError(true)
     } finally {
@@ -38,18 +36,14 @@ function App() {
     }
   }
 
-  // useEffect(() => {
-    
-  // }, [movieModal])
-
-  function handleClick(id:number) {
-    const movie = movies.find((item) => item.id === (id));
-    
-    if (movie) {
-      setMovie(movie);
-    }
-
-    setOpenModal(true)
+  function handleClick(movie: Movie) {
+    setMovie(movie);
+    setOpenModal(true);
+  }
+  
+  function handleClose() {
+    setMovie(null)
+    setOpenModal(false)
   }
 
   return (
@@ -58,7 +52,7 @@ function App() {
       <SearchBar onSubmit={handleSearchSubmit} />
       {error === true && <ErrorMessage />}
       {loader === true ? (<Loader />) : (<MovieGrid movies={movies} onSelect={handleClick} />)}
-      {openModal === true && <MovieModal movie={ movie } onClose={() => setOpenModal(false)}/>}
+      {openModal === true && <MovieModal movie={ movie } onClose={handleClose}/>}
     </>
   )
 }
